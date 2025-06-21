@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/clipboard.js/2.0.10/clipboard.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji 代理位复制工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #673ab7;
+            --primary-light: #9575cd;
+            --primary-dark: #512da8;
+            --surface: #636c6e;
+            --background:rgb(0, 0, 0);
+            --on-primary: #e0e0e0;
+            --on-surface: #212121;
+            --on-background: #424242;
+            --divider: #673ab7;
+            --success: #4caf50;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--on-surface);
+            padding: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .app-bar {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2px;
+        }
+        
+        .app-bar h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .emoji-list {
+            background-color: var(--surface);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--divider);
+            transition: background-color 0.2s;
+        }
+        
+        .list-item:hover {
+            background-color: #21bac7;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-title {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        
+        .item-subtitle {
+            font-size: 0.9rem;
+            color: var(--on-background);
+        }
+        
+        .copy-btn {
+            background-color: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background-color: rgba(103, 58, 183, 0.1);
+        }
+        
+        .copy-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .random-btn {
+            background-color: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            border-radius: 24px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 16px auto;
+            box-shadow: 0 2px 5px rgba(103, 58, 183, 0.3);
+            transition: all 0.2s;
+        }
+        
+        .random-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(103, 58, 183, 0.3);
+        }
+        
+        .footer {
+            text-align: center;
+            color: var(--on-background);
+            font-size: 0.85rem;
+            padding: 16px;
+        }
+        
+        .snackbar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            animation: fadeInOut 3s forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; bottom: 0; }
+            10% { opacity: 1; bottom: 20px; }
+            90% { opacity: 1; bottom: 20px; }
+            100% { opacity: 0; bottom: 0; }
+        }
+        
+        @media (max-width: 600px) {
+            .app-bar {
+                padding: 12px;
+            }
+            
+            .list-item {
+                padding: 12px;
+            }
+            
+            .random-btn {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-bar">
+        <h1>Emoji 代理位复制</h1>
+        <h5>无法复制？直接复制此字符试试：�</h5>
+    </div>
+    
+    <div class="emoji-list" id="emojiList"></div>
+    
+    <button class="random-btn" id="randomBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+        </svg>
+        随机复制一个代理位
+    </button>
+    
+    <div class="footer">
+        <h3>光遇非法字符生成工具</h3><br/>原理来自于<a href="https://v.douyin.com/VV0OTvsDFd0/"target="_blank">@sky光媛</a>（抖音）<br/>作者抖音号：yixiaoyv_8879106（翊小羽）<br/>部分界面设计来自于<a href="https://v.douyin.com/VV0OTvsDFd0/"target="_blank">@sky光媛</a>（抖音）<br/><a href="https://github.com/zghzd/tools-for-Sky-Children-of-the-Light"target="_blank">作者主页 或 获取更多工具</a>
+    </div>
+    
+    <script>
+        const entries = [
+            {name: '😂 笑哭脸', hex: 'D83D'},
+            {name: '❤️ 红心', hex: 'D83C'},
+            {name: '🔥 火焰', hex: 'D82F'},
+            {name: '⚡ 闪电', hex: 'D840'},
+            {name: '🏀 篮球', hex: 'D83C'},
+            {name: '🦄 独角兽', hex: 'D83E'},
+            {name: '😻 心眼猫', hex: 'D83D'},
+            {name: '🎉 派对', hex: 'D83C'},
+            {name: '🌈 彩虹', hex: 'D83C'},
+            {name: '🌟 星星', hex: 'D83C'},
+            {name: '💧 水滴', hex: 'D83D'},
+            {name: '🍀 三叶草', hex: 'D83C'},
+            {name: '🎵 音符', hex: 'D83C'},
+            {name: '🍎 苹果', hex: 'D83C'},
+            {name: '🚀 火箭', hex: 'D83D'},
+            {name: '🧩 拼图', hex: 'D83E'},
+            {name: '⚽ 足球', hex: 'D83C'},
+            {name: '🎮 游戏手柄', hex: 'D83C'},
+            {name: '📚 书籍', hex: 'D83D'},
+            {name: '✈️ 飞机', hex: 'D83D'},
+            {name: '🎂 蛋糕', hex: 'D83C'},
+            {name: '🛒 购物车', hex: 'D83D'},
+            {name: '💡 灯泡', hex: 'D83D'},
+            {name: '📷 相机', hex: 'D83D'},
+            {name: '🎁 礼物', hex: 'D83C'},
+            {name: '🏆 奖杯', hex: 'D83C'},
+            {name: '⚓ 锚', hex: 'D83D'},
+            {name: '🛡️ 盾牌', hex: 'D83E'},
+            {name: '🧸 泰迪熊', hex: 'D83E'},
+            {name: '🌻 向日葵', hex: 'D83C'},
+        ];
+        
+       function copySurrogate(hex) {
+            const surrogate = String.fromCharCode(parseInt(hex, 16));
+            
+            navigator.clipboard.writeText(surrogate)
+                .then(() => {
+                    showSnackbar(`已复制 \\u${hex} 到剪贴板`);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    showSnackbar('复制失败，请重试');
+                });
+        }
+        
+        function copyRandomSurrogate() {
+            const randomIndex = Math.floor(Math.random() * entries.length);
+            const entry = entries[randomIndex];
+            copySurrogate(entry.hex);
+        }
+        
+        function showSnackbar(message) {
+            const existing = document.querySelector('.snackbar');
+            if (existing) existing.remove();
+            
+            const snackbar = document.createElement('div');
+            snackbar.className = 'snackbar';
+            snackbar.textContent = message;
+            document.body.appendChild(snackbar);
+            
+            setTimeout(() => {
+                snackbar.remove();
+            }, 3000);
+        }
+        
+        function renderEmojiList() {
+            const emojiList = document.getElementById('emojiList');
+            
+            entries.forEach(entry => {
+                const listItem = document.createElement('div');
+                listItem.className = 'list-item';
+                
+                listItem.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-title">${entry.name}</div>
+                        <div class="item-subtitle">高位代理：\\u${entry.hex}</div>
+                    </div>
+                    <button class="copy-btn" data-hex="${entry.hex}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                        </svg>
+                    </button>
+                `;
+                
+                emojiList.appendChild(listItem);
+            });
+            
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const hex = e.currentTarget.getAttribute('data-hex');
+                    copySurrogate(hex);
+                });
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEmojiList();
+            
+            document.getElementById('randomBtn').addEventListener('click', copyRandomSurrogate);
+        });
+    </script>
+</body>
+</html>
